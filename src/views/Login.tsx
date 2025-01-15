@@ -26,6 +26,7 @@ import type * as z from 'zod'
 import { useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Alert } from '@mui/material'
 
 import type { SystemMode } from '@core/types'
 
@@ -71,8 +72,8 @@ const MaskImg = styled('img')({
 const LoginV2 = ({ mode }: { mode: SystemMode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
-  const [error, setError] = useState<string>('')
-  const [success, setSuccess] = useState<string>('')
+  const [error, setError] = useState<string | undefined>('')
+  const [success, setSuccess] = useState<string | undefined>('')
   const [isPending, startTransition] = useTransition()
 
   // Vars
@@ -112,11 +113,9 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
 
     startTransition(() => {
       login(values).then(data => {
-        if (data.error) {
+        if (data) {
           setError(data.error)
-        } else {
           setSuccess(data.success)
-          router.push('/login') // Redirect to home page
         }
       })
     })
@@ -179,6 +178,8 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
                 }
               }}
             />
+            {success && <Alert severity='success'>{success}</Alert>}
+            {error && <Alert severity='error'>{error}</Alert>}
             <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
               <FormControlLabel control={<Checkbox />} label='Remember me' />
               <Typography className='text-end' color='primary.main' component={Link}>

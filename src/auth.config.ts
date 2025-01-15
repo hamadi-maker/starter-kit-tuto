@@ -1,14 +1,10 @@
-// import type { NextAuthConfig } from 'next-auth'
-
 import GitHub from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
 import Credentials from 'next-auth/providers/credentials'
 
 import bcryptjs from 'bcryptjs'
 
-import type NextAuthConfig from 'next-auth'
-
-import type { AuthOptions } from './../node_modules/next-auth/core/types.d'
+import type { NextAuthConfig } from 'next-auth'
 
 import { LoginSchema } from './schemas'
 import { getUserByEmail } from './data/user'
@@ -24,10 +20,6 @@ export default {
       clientSecret: process.env.GITHUB_CLIENT_SECRET || ''
     }),
     Credentials({
-      credentials: {
-        email: { label: 'Email', type: 'email', placeholder: 'jhon.doe@exemple.com' },
-        password: { label: 'Password', type: 'password', placeholder: '*******' }
-      },
       async authorize(credentials) {
         const validateFields = LoginSchema.safeParse(credentials)
 

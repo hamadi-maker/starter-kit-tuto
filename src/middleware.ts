@@ -1,24 +1,23 @@
-import type { NextRequest } from 'next/server'
-
 import NextAuth from 'next-auth'
 
 import authConfig from '@/auth.config'
 
 import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from '@/routes'
 
-interface AuthRequest extends NextRequest {
-  auth?: { user: any } // Customize based on your auth structure
-}
-
 const { auth } = NextAuth(authConfig)
 
-export default auth((req: AuthRequest): any => {
+export default auth((req): any => {
   const isLoggedIn = !!req.auth
+
+  console.log('is Logged in', isLoggedIn)
+
   const { nextUrl } = req
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPulicRoute = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+
+  console.log('is Auth Route', isAuthRoute)
 
   if (isApiAuthRoute) {
     return null
@@ -33,7 +32,7 @@ export default auth((req: AuthRequest): any => {
   }
 
   if (!isLoggedIn && !isPulicRoute) {
-    return Response.redirect(new URL('/auth/login', nextUrl))
+    return Response.redirect(new URL('/login', nextUrl))
   }
 
   return null
@@ -44,7 +43,6 @@ export const config = {
   matcher: [
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
 
-    // Always run for API routes
     '/(api|trpc)(.*)'
   ]
 }
