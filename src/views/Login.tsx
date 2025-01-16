@@ -116,6 +116,10 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
         if (data) {
           setError(data.error)
           setSuccess(data.success)
+
+          if (data.success) {
+            router.push('/home')
+          }
         }
       })
     })
@@ -151,19 +155,33 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
             <Typography variant='h4'>{`Welcome ! 👋🏻`}</Typography>
             <Typography>Please sign-in to your account and start the adventure</Typography>
           </div>
-          <form noValidate autoComplete='off' onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-5'>
+          <form autoComplete='off' onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-5'>
             <CustomTextField
-              {...form.register('email')}
+              {...form.register('email', {
+                required: 'Email or Username is required',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: 'Enter a valid email address'
+                }
+              })}
               autoFocus
               fullWidth
-              label='Email or Username'
-              placeholder='Enter your email or username'
+              error={!!form.formState.errors.email}
+              helperText={form.formState.errors.email?.message}
+              disabled={isPending}
+              label='Email'
+              placeholder='Default creds: test1@test.com'
             />
             <CustomTextField
-              {...form.register('password')}
+              {...form.register('password', {
+                required: 'Password is required'
+              })}
               fullWidth
+              error={!!form.formState.errors.password}
+              helperText={form.formState.errors.password?.message}
               label='Password'
-              placeholder='············'
+              disabled={isPending}
+              placeholder='Default creds: 123456'
               id='outlined-adornment-password'
               type={isPasswordShown ? 'text' : 'password'}
               slotProps={{
