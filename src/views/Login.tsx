@@ -4,7 +4,7 @@
 import { useState, useTransition } from 'react'
 
 // Next Imports
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 
 // MUI Imports
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -85,7 +85,7 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
   const borderedLightIllustration = '/images/illustrations/auth/v2-login-light-border.png'
 
   // Hooks
-  const router = useRouter()
+  // const router = useRouter()
   const { settings } = useSettings()
   const theme = useTheme()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
@@ -113,14 +113,9 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
 
     startTransition(() => {
       login(values).then(data => {
-        if (data) {
-          setError(data.error)
-          setSuccess(data.success)
+        setError(data?.error)
 
-          if (data.success) {
-            router.push('/home')
-          }
-        }
+        // setSuccess(data?.success)
       })
     })
   }
@@ -158,7 +153,7 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
           <form autoComplete='off' onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-5'>
             <CustomTextField
               {...form.register('email', {
-                required: 'Email or Username is required',
+                required: 'Email is required',
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                   message: 'Enter a valid email address'
@@ -209,7 +204,7 @@ const LoginV2 = ({ mode }: { mode: SystemMode }) => {
             </Button>
             <div className='flex justify-center items-center flex-wrap gap-2'>
               <Typography>New on our platform?</Typography>
-              <Typography component={Link} color='primary.main'>
+              <Typography href='/register' component={Link} color='primary.main'>
                 Create an account
               </Typography>
             </div>

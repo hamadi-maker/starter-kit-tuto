@@ -115,7 +115,7 @@ const Register = ({ mode }: { mode: SystemMode }) => {
           setError(data.error)
         } else {
           setSuccess(data.success)
-          router.push('/login') // Redirect to home page
+          router.push('/login')
         }
       })
     })
@@ -153,15 +153,41 @@ const Register = ({ mode }: { mode: SystemMode }) => {
           </div>
           <form noValidate autoComplete='off' onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-5'>
             <CustomTextField
-              {...form.register('email')}
+              {...form.register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: 'Enter a valid email address'
+                }
+              })}
+              error={!!form.formState.errors.email}
+              helperText={form.formState.errors.email?.message}
               autoFocus
               fullWidth
               label='Email'
               placeholder='jhon.doe@exemple.com'
             />
-            <CustomTextField {...form.register('name')} autoFocus fullWidth label='Name' placeholder='jhon doe' />
             <CustomTextField
-              {...form.register('password')}
+              {...form.register('name', {
+                required: 'Name is required'
+              })}
+              error={!!form.formState.errors.name}
+              helperText={form.formState.errors.name?.message}
+              autoFocus
+              fullWidth
+              label='Name'
+              placeholder='jhon doe'
+            />
+            <CustomTextField
+              {...form.register('password', {
+                required: 'Password is required',
+                minLength: {
+                  value: 6,
+                  message: 'password must be at least 3 characters'
+                }
+              })}
+              error={!!form.formState.errors.password}
+              helperText={form.formState.errors.password?.message}
               fullWidth
               label='Password'
               placeholder='············'
@@ -187,7 +213,7 @@ const Register = ({ mode }: { mode: SystemMode }) => {
             </Button>
             <div className='flex justify-center items-center flex-wrap gap-2'>
               <Typography>Already have an account?</Typography>
-              <Typography component={Link} color='primary.main'>
+              <Typography href='/login' component={Link} color='primary.main'>
                 Log In
               </Typography>
             </div>

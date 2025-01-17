@@ -27,6 +27,9 @@ export default {
           const { email, password } = validateFields.data
           const user = await getUserByEmail(email)
 
+          console.log('email passed in :', email)
+          console.log('email of user :', user?.email)
+
           if (!user || !user.password) return null
 
           const passwordMatch = await bcryptjs.compare(password, user.password)

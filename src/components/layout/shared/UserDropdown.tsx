@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
 // Next Imports
@@ -23,6 +23,7 @@ import Button from '@mui/material/Button'
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
+import { getUserSession, handleSignOut } from '@/app/api/auth/signout'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -37,6 +38,14 @@ const BadgeContentSpan = styled('span')({
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false)
+
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    picture: null,
+    id: '',
+    role: ''
+  })
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -62,8 +71,22 @@ const UserDropdown = () => {
     setOpen(false)
   }
 
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      const res = await getUserSession()
+
+      setUser(JSON.parse(res))
+    }
+
+    fetchUserSession()
+  }, [])
+
+  // getUserSession().then(res => {
+  //   setUser(JSON.parse(res))
+  // })
+
   const handleUserLogout = async () => {
-    // Redirect to login page
+    await handleSignOut()
     router.push('/login')
   }
 
@@ -106,9 +129,9 @@ const UserDropdown = () => {
                     <Avatar alt='John Doe' src='/images/avatars/1.png' />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        John Doe
+                        {user.name}
                       </Typography>
-                      <Typography variant='caption'>admin@vuexy.com</Typography>
+                      <Typography variant='caption'>{user.email}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
