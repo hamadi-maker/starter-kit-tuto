@@ -20,6 +20,7 @@ import ScrollToTop from '@core/components/scroll-to-top'
 
 // Util Imports
 import { getMode, getSystemMode } from '@core/utils/serverHelpers'
+import { EdgeStoreProvider } from '@/lib/edgestore'
 
 const Layout = async (props: ChildrenType) => {
   const { children } = props
@@ -31,19 +32,21 @@ const Layout = async (props: ChildrenType) => {
 
   return (
     <Providers direction={direction}>
-      <LayoutWrapper
-        systemMode={systemMode}
-        verticalLayout={
-          <VerticalLayout navigation={<Navigation mode={mode} />} navbar={<Navbar />} footer={<VerticalFooter />}>
-            {children}
-          </VerticalLayout>
-        }
-        horizontalLayout={
-          <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
-            {children}
-          </HorizontalLayout>
-        }
-      />
+      <EdgeStoreProvider>
+        <LayoutWrapper
+          systemMode={systemMode}
+          verticalLayout={
+            <VerticalLayout navigation={<Navigation mode={mode} />} navbar={<Navbar />} footer={<VerticalFooter />}>
+              {children}
+            </VerticalLayout>
+          }
+          horizontalLayout={
+            <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
+              {children}
+            </HorizontalLayout>
+          }
+        />
+      </EdgeStoreProvider>
       <ScrollToTop className='mui-fixed'>
         <Button variant='contained' className='is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center'>
           <i className='tabler-arrow-up' />

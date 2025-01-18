@@ -25,6 +25,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useForm } from 'react-hook-form'
 
+import { Alert } from '@mui/material'
+
 import type { SystemMode } from '@core/types'
 
 // Component Imports
@@ -163,6 +165,7 @@ const Register = ({ mode }: { mode: SystemMode }) => {
               error={!!form.formState.errors.email}
               helperText={form.formState.errors.email?.message}
               autoFocus
+              disabled={isPending}
               fullWidth
               label='Email'
               placeholder='jhon.doe@exemple.com'
@@ -175,6 +178,7 @@ const Register = ({ mode }: { mode: SystemMode }) => {
               helperText={form.formState.errors.name?.message}
               autoFocus
               fullWidth
+              disabled={isPending}
               label='Name'
               placeholder='jhon doe'
             />
@@ -191,6 +195,7 @@ const Register = ({ mode }: { mode: SystemMode }) => {
               fullWidth
               label='Password'
               placeholder='············'
+              disabled={isPending}
               id='outlined-adornment-password'
               type={isPasswordShown ? 'text' : 'password'}
               slotProps={{
@@ -205,6 +210,8 @@ const Register = ({ mode }: { mode: SystemMode }) => {
                 }
               }}
             />
+            {success && <Alert severity='success'>{success}</Alert>}
+            {error && <Alert severity='error'>{error}</Alert>}
 
             <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'></div>
 
