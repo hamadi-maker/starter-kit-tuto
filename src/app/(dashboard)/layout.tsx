@@ -1,6 +1,8 @@
 // MUI Imports
 import Button from '@mui/material/Button'
 
+import ReduxProvider from '@/providers/reduxProvider'
+
 // Type Imports
 import type { ChildrenType } from '@core/types'
 
@@ -22,8 +24,12 @@ import ScrollToTop from '@core/components/scroll-to-top'
 import { getMode, getSystemMode } from '@core/utils/serverHelpers'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 
+import { auth } from '@/auth'
+
 const Layout = async (props: ChildrenType) => {
   const { children } = props
+
+  const session = await auth()
 
   // Vars
   const direction = 'ltr'
@@ -31,28 +37,33 @@ const Layout = async (props: ChildrenType) => {
   const systemMode = await getSystemMode()
 
   return (
-    <Providers direction={direction}>
-      <EdgeStoreProvider>
-        <LayoutWrapper
-          systemMode={systemMode}
-          verticalLayout={
-            <VerticalLayout navigation={<Navigation mode={mode} />} navbar={<Navbar />} footer={<VerticalFooter />}>
-              {children}
-            </VerticalLayout>
-          }
-          horizontalLayout={
-            <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
-              {children}
-            </HorizontalLayout>
-          }
-        />
-      </EdgeStoreProvider>
-      <ScrollToTop className='mui-fixed'>
-        <Button variant='contained' className='is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center'>
-          <i className='tabler-arrow-up' />
-        </Button>
-      </ScrollToTop>
-    </Providers>
+    <ReduxProvider session={session}>
+      <Providers direction={direction}>
+        <EdgeStoreProvider>
+          <LayoutWrapper
+            systemMode={systemMode}
+            verticalLayout={
+              <VerticalLayout navigation={<Navigation mode={mode} />} navbar={<Navbar />} footer={<VerticalFooter />}>
+                {children}
+              </VerticalLayout>
+            }
+            horizontalLayout={
+              <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
+                {children}
+              </HorizontalLayout>
+            }
+          />
+        </EdgeStoreProvider>
+        <ScrollToTop className='mui-fixed'>
+          <Button
+            variant='contained'
+            className='is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center'
+          >
+            <i className='tabler-arrow-up' />
+          </Button>
+        </ScrollToTop>
+      </Providers>
+    </ReduxProvider>
   )
 }
 

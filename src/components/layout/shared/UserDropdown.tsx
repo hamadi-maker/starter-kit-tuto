@@ -1,11 +1,14 @@
 'use client'
 
 // React Imports
-import { useEffect, useRef, useState } from 'react'
+
+import { useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
 // Next Imports
 import { useRouter } from 'next/navigation'
+
+import { useSelector } from 'react-redux'
 
 // MUI Imports
 import { styled } from '@mui/material/styles'
@@ -21,9 +24,13 @@ import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 
+import type { RootState } from '@/store/store'
+
+import useAuthSync from '@/hooks/useAuthSync'
+
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
-import { getUserSession, handleSignOut } from '@/app/api/auth/signout'
+import { handleSignOut } from '@/app/api/auth/signout'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -36,16 +43,12 @@ const BadgeContentSpan = styled('span')({
 })
 
 const UserDropdown = () => {
+  useAuthSync()
+
   // States
   const [open, setOpen] = useState(false)
 
-  const [user, setUser] = useState({
-    name: '',
-    email: '',
-    image: '',
-    id: '',
-    role: ''
-  })
+  const user = useSelector((state: RootState) => state.auth.user)
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -70,20 +73,6 @@ const UserDropdown = () => {
 
     setOpen(false)
   }
-
-  useEffect(() => {
-    const fetchUserSession = async () => {
-      const res = await getUserSession()
-
-      setUser(JSON.parse(res))
-    }
-
-    fetchUserSession()
-  }, [])
-
-  // getUserSession().then(res => {
-  //   setUser(JSON.parse(res))
-  // })
 
   const handleUserLogout = async () => {
     await handleSignOut()

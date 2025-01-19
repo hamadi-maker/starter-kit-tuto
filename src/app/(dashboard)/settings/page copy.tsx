@@ -5,21 +5,19 @@ import type * as z from 'zod'
 
 import { Box, Typography, Card, CardContent, Button, Avatar, Tabs, Tab, Alert } from '@mui/material'
 
-import { useDispatch, useSelector } from 'react-redux'
-
 import { useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { setUser } from '@/store/slices/authSlice'
+import { useSelector } from 'react-redux'
 
+import { getUserSession } from '@/app/api/auth/signout'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { UserSchema } from '@/schemas'
 import { Update } from '@/actions/updateUser'
 import { useEdgeStore } from '@/lib/edgestore'
 
 import type { RootState } from '@/store/store'
-import useAuthSync from '@/hooks/useAuthSync'
 
 function TabPanel({ children, value, index }) {
   return (
@@ -30,16 +28,15 @@ function TabPanel({ children, value, index }) {
 }
 
 export default function SettingsPage() {
-  useAuthSync()
   const [tabValue, setTabValue] = useState(0)
 
-  // const [user, setUser] = useState({
-  //   name: '',
-  //   email: '',
-  //   image: '',
-  //   id: '',
-  //   role: ''
-  // })
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    picture: null,
+    id: '',
+    role: ''
+  })
 
   const [error, setError] = useState<string | undefined>('')
   const [success, setSuccess] = useState<string | undefined>('')
@@ -52,20 +49,27 @@ export default function SettingsPage() {
     resolver: zodResolver(UserSchema)
   })
 
+  // const watchedImage = form.watch('image')
   const [image, setImage] = useState<string>(form.getValues('image') || '/images/avatars/default-profile.png')
+
+  // const [urls, setUrls] = useState<{
+  //   url: '/images/avatars/default-profile.png'
+  //   thumbnailUrl: string | null
+  // }>()
 
   const [file, setFile] = useState<File>()
   const { edgestore } = useEdgeStore()
 
-  const user = useSelector((state: RootState) => state.auth.user)
-
   useEffect(() => {
-    if (user.image) {
-      setImage(user.image)
-    }
-  }, [user.image])
+    const fetchUserSession = async () => {
+      const res = await getUserSession()
 
-  const dispatch = useDispatch()
+      setUser(JSON.parse(res))
+      setImage(JSON.parse(res).image)
+    }
+
+    fetchUserSession()
+  }, [])
 
   const onSubmit = (values: z.infer<typeof UserSchema>) => {
     console.log('this is image from onsubmit :', image)
@@ -73,14 +77,8 @@ export default function SettingsPage() {
     setSuccess('')
 
     Update(values).then(data => {
-      if (data?.success) {
-        setSuccess(data?.success)
-        dispatch(setUser(values))
-      }
-
-      if (data?.error) {
-        setError(data?.error)
-      }
+      setError(data?.error)
+      setSuccess(data?.success)
     })
   }
 

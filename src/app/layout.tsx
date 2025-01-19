@@ -4,6 +4,8 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
 // Third-party Imports
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
+// import { SessionProvider } from 'next-auth/react';
+
 // Type Imports
 import type { ChildrenType } from '@core/types'
 

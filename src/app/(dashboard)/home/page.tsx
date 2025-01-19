@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { Box, Typography, Grid2, Card, CardContent, Button, Avatar } from '@mui/material'
 
 import { styled } from '@mui/material/styles'
 
-import { getUserSession } from '@/app/api/auth/signout'
+import type { RootState } from '@/store/store'
+import useAuthSync from '@/hooks/useAuthSync'
 
 const WelcomeCard = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.primary.light,
@@ -24,23 +25,8 @@ const SectionCard = styled(Card)(({ theme }) => ({
 }))
 
 export default function Page() {
-  const [user, setUser] = useState({
-    name: '',
-    email: '',
-    picture: null,
-    id: '',
-    role: ''
-  })
-
-  useEffect(() => {
-    const fetchUserSession = async () => {
-      const res = await getUserSession()
-
-      setUser(JSON.parse(res))
-    }
-
-    fetchUserSession()
-  }, [])
+  useAuthSync()
+  const user = useSelector((state: RootState) => state.auth.user)
 
   return (
     <Box sx={{ p: 4 }}>

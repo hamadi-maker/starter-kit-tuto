@@ -29,8 +29,12 @@ export const {
       }
 
       if (token.role && session.user) {
-        session.user.role = token.role as 'ADMIN' | 'USER'
+        session.user.role = token.role
+
+        // as 'ADMIN' | 'USER'
       }
+
+      session.user.role = token.role
 
       return session
     },
