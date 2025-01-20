@@ -1,4 +1,5 @@
 'use client'
+import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 
 import type * as z from 'zod'
@@ -19,9 +20,14 @@ import { Update } from '@/actions/updateUser'
 import { useEdgeStore } from '@/lib/edgestore'
 
 import type { RootState } from '@/store/store'
-import useAuthSync from '@/hooks/useAuthSync'
 
-function TabPanel({ children, value, index }) {
+interface TabPanelProps {
+  children: ReactNode
+  value: number
+  index: number
+}
+
+function TabPanel({ children, value, index }: TabPanelProps) {
   return (
     <div role='tabpanel' hidden={value !== index}>
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -30,16 +36,7 @@ function TabPanel({ children, value, index }) {
 }
 
 export default function SettingsPage() {
-  useAuthSync()
   const [tabValue, setTabValue] = useState(0)
-
-  // const [user, setUser] = useState({
-  //   name: '',
-  //   email: '',
-  //   image: '',
-  //   id: '',
-  //   role: ''
-  // })
 
   const [error, setError] = useState<string | undefined>('')
   const [success, setSuccess] = useState<string | undefined>('')
@@ -52,12 +49,20 @@ export default function SettingsPage() {
     resolver: zodResolver(UserSchema)
   })
 
-  const [image, setImage] = useState<string>(form.getValues('image') || '/images/avatars/default-profile.png')
+  const [image, setImage] = useState<string>(form.getValues('image') || '')
 
   const [file, setFile] = useState<File>()
   const { edgestore } = useEdgeStore()
 
   const user = useSelector((state: RootState) => state.auth.user)
+
+  // const [userState, setUserState] = useState({
+  //   name: user.name,
+  //   email: user.email,
+  //   image: user.image,
+  //   id: user.id,
+  //   role: user.role
+  // })
 
   useEffect(() => {
     if (user.image) {
@@ -75,7 +80,15 @@ export default function SettingsPage() {
     Update(values).then(data => {
       if (data?.success) {
         setSuccess(data?.success)
-        dispatch(setUser(values))
+        dispatch(
+          setUser({
+            id: user.id,
+            email: values.email,
+            name: values.name,
+            image,
+            role: user.role
+          })
+        )
       }
 
       if (data?.error) {

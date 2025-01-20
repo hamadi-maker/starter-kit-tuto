@@ -7,7 +7,6 @@ import { Box, Typography, Grid2, Card, CardContent, Button, Avatar } from '@mui/
 import { styled } from '@mui/material/styles'
 
 import type { RootState } from '@/store/store'
-import useAuthSync from '@/hooks/useAuthSync'
 
 const WelcomeCard = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.primary.light,
@@ -25,7 +24,7 @@ const SectionCard = styled(Card)(({ theme }) => ({
 }))
 
 export default function Page() {
-  useAuthSync()
+  // useAuthSync()
   const user = useSelector((state: RootState) => state.auth.user)
 
   return (

@@ -15,38 +15,29 @@ export const {
   signOut
 } = NextAuth({
   callbacks: {
-    // async signIn({ user }){
-    //   const existingUser = await getUserById(user.id as string)
-
-    //   if (!existingUser || !existingUser.emailVerified) return false ;
-
-    //   return true;
-    // },
-
-    async session({ token, session }: any) {
+    async session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub
+        session.user.role = (token.role as 'ADMIN') || 'USER'
+        session.user.name = token.name
+        session.user.email = token.email ?? ''
+        session.user.image = token.image as string | null | undefined
       }
-
-      if (token.role && session.user) {
-        session.user.role = token.role
-
-        // as 'ADMIN' | 'USER'
-      }
-
-      session.user.role = token.role
 
       return session
     },
-
-    async jwt({ token }: any) {
+    async jwt({ token }) {
       if (!token.sub) return token
 
+      // Fetch the latest user data from the database
       const existingUser = await getUserById(token.sub)
 
-      if (!existingUser) return token
-
-      token.role = existingUser.role
+      if (existingUser) {
+        token.role = existingUser.role
+        token.name = existingUser.name
+        token.email = existingUser.email
+        token.image = existingUser.image // Use your updated field
+      }
 
       return token
     }
