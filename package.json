@@ -22,6 +22,7 @@
     "@emotion/styled": "11.14.0",
     "@floating-ui/react": "0.27.2",
     "@hookform/resolvers": "^3.10.0",
+    "@iconify/react": "^5.2.0",
     "@mui/lab": "6.0.0-beta.19",
     "@mui/material": "6.2.1",
     "@mui/material-nextjs": "6.2.1",

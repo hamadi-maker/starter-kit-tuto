@@ -20,6 +20,8 @@ import { Update } from '@/actions/updateUser'
 import { useEdgeStore } from '@/lib/edgestore'
 
 import type { RootState } from '@/store/store'
+import UserCard from '@/views/UserCard'
+import { getAllUsers } from '@/data/user'
 
 interface TabPanelProps {
   children: ReactNode
@@ -36,6 +38,46 @@ function TabPanel({ children, value, index }: TabPanelProps) {
 }
 
 export default function SettingsPage() {
+  const mockUsers: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      image: 'https://randomuser.me/api/portraits/men/1.jpg'
+    },
+    {
+      id: '2',
+      name: 'Sarah Johnson',
+      email: 'sarah.j@example.com',
+      image: 'https://randomuser.me/api/portraits/women/2.jpg'
+    },
+    {
+      id: '3',
+      name: 'Michael Chen',
+      email: 'michael.chen@example.com',
+      image: 'https://randomuser.me/api/portraits/men/3.jpg'
+    },
+    {
+      id: '4',
+      name: 'Emily Brown',
+      email: 'emily.brown@example.com',
+      image: 'https://randomuser.me/api/portraits/women/4.jpg'
+    }
+  ]
+
+  // const fetchUsers = () => {
+  //   setUsers(JSON.parse(JSON.stringify(getAllUsers())))
+  //   console.log('all user from data : ', users)
+  // }
+
+  const handleEdit = (user: User): void => {
+    console.log('Editing user:', user)
+  }
+
+  const handleDelete = (user: User): void => {
+    console.log('Deleting user:', user)
+  }
+
   const [tabValue, setTabValue] = useState(0)
 
   const [error, setError] = useState<string | undefined>('')
@@ -209,14 +251,12 @@ export default function SettingsPage() {
       {/* User Settings Tab */}
       <TabPanel value={tabValue} index={1}>
         <Card>
-          <CardContent>
+          {/* <CardContent>
             <Typography variant='h5' gutterBottom>
               User Settings
-            </Typography>
-            <Typography variant='body1' color='textSecondary'>
-              Additional user preferences and configurations can go here.
-            </Typography>
-          </CardContent>
+            </Typography> */}
+          <UserCard users={mockUsers} />
+          {/* </CardContent> */}
         </Card>
       </TabPanel>
     </Box>
